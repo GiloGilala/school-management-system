@@ -1,0 +1,48 @@
+{
+  "kind": "collectionType",
+  "collectionName": "leave_balances",
+  "info": {
+    "name": "Leave Balance"
+  },
+  "options": {
+    "increments": true,
+    "timestamps": true
+  },
+  "attributes": {
+    "Casual_Leaves": {
+      "type": "string"
+    },
+    "Special_Leaves": {
+      "type": "string"
+    },
+    "Sick_Leaves": {
+      "type": "string"
+    },
+    "Bereavement_Leave": {
+      "type": "string"
+    },
+    "Total_Leaves_Utilized": {
+      "type": "string"
+    },
+    "Leave_Balance": {
+      "type": "string"
+    },
+    "CL_Utilized": {
+      "type": "string"
+    },
+    "SL_Utilized": {
+      "type": "string"
+    },
+    "LOP": {
+      "type": "string"
+    },
+    "Employee_Name": {
+      "type": "string"
+    },
+    "user": {
+      "plugin": "users-permissions",
+      "model": "user",
+      "via": "leave_balance"
+    }
+  }
+}

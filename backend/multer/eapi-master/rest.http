@@ -1,0 +1,87 @@
+
+### root access
+GET  http://localhost:8000
+
+### Login api endpoing
+POST  http://localhost:8000/api/v1/login
+Content-Type: application/json
+
+{
+  "email": "b@c.com",
+  "password": "123456"
+}
+
+
+
+
+###user routers
+### get user by id
+GET  http://localhost:8000/api/v1/user
+Authorization:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImJAYy5jb20iLCJpYXQiOjE2MTk4Mzk5OTksImV4cCI6MTYxOTg0MDg5OX0.jO4-IgTk7gVsabnEsX2H9dI5O9vlo_b1CnScPGusDMo
+
+### Create a user
+POST http://localhost:8000/api/v1/user
+Content-Type: application/json
+
+{
+  "fName": "sfjsd",
+  "lName": "sfdkl",
+  "email": "b@c.com",
+  "password": "123456",
+  "role": "user"
+}
+
+
+### logout api endpoing
+POST http://localhost:8000/api/v1/user/logout
+Content-Type: application/json
+
+{"_id": "6084f1fea2d7e03e8465907e" }
+
+
+### Categor Zone ####
+### F\
+GET  http://localhost:8000/api/v1/category
+ 
+
+### Add a category
+POST  http://localhost:8000/api/v1/category
+Content-Type: application/json
+
+{
+  "name": "Root Category", "parentCat": null}
+
+
+### Add a category
+PUT   http://localhost:8000/api/v1/category
+Content-Type: application/json
+
+{
+  "_id": "607c198c9dfa507e340456fe",
+  "name": "Root Category"}
+
+### Delete Categories
+Delete  http://localhost:8000/api/v1/category
+ 
+ 
+### Products APIs
+### Add new product
+POST  http://localhost:8000/api/v1/product
+Content-Type: application/json
+
+{"name": "Root Category", 
+"price": 0}
+
+
+### fetch all products
+GET   http://localhost:8000/api/v1/product
+
+### fetch single product
+GET   http://localhost:8000/api/v1/product/607a850e263dc01ac00d540c
+
+
+
+### token endpoint
+# Request fresh accessJWt
+GET  http://localhost:8000/api/v1/token
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImJAYy5jb20iLCJpYXQiOjE2MTk0ODI3NDAsImV4cCI6MTYyMjA3NDc0MH0.Ug2GZHZXlcP1zxjUcCA_Hkea047-Yzb1R_bCKnacABY
