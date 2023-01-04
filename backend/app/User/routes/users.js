@@ -28,7 +28,7 @@ router.delete("/me/pic", isAuthUser, upload.single("file"), deleteProfilePic);
 router.get("/me/pic", isAuthUser, getProfilePic);
 
 //DELETE
-router.delete("/:id", isAuthUser, deleteUser);
+router.delete("/:id", deleteUser);
 
 //GET
 router.get("/find/:id", isAuthUser, getUser);

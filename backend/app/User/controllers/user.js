@@ -31,12 +31,11 @@ export const deleteUser = async (req, res, next) => {
   try {
     const user = await User.findById(req.params.id);
     if (!user) return next(createError(404, "user not found!"));
-    if (req.user.id === user) {
+    // if (req.user.id === user) {
       await User.findByIdAndDelete(req.params.id);
       res.status(200).json("The user has been deleted.");
-    } else {
-      return next(createError(403, "You can delete only your user!"));
-    }
+    // } 
+    
   } catch (err) {
     next(err);
   }

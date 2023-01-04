@@ -29,6 +29,10 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    resetLink: {
+      Data: String,
+      required: "",
+    },
     profilePic: {
       type: String,
       default: "image",
@@ -47,7 +51,7 @@ const userSchema = new mongoose.Schema(
 
     roles: {
       type: [String],
-      default: ["Subscriber"],
+      default: ["User"],
       enum: [
         "Student",
         "Teacher",
@@ -61,6 +65,7 @@ const userSchema = new mongoose.Schema(
         "Instructor",
         "Admin",
         "SuperAmdin",
+        "User",
       ],
     },
 

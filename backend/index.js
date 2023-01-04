@@ -6,8 +6,6 @@ import dotenv from "dotenv";
 import path from "path";
 import { fileURLToPath } from "url";
 // import multer from "multer";
-import { google } from "googleapis";
-import  nodemailer from "nodemailer";
 
 import authRoute from "./app/user/routes/auth.js";
 import usersRoute from "./app/user/routes/users.js";
@@ -18,13 +16,13 @@ import commentsRoute from "./app/Blog/routes/comments.js";
 import postsRoute from "./app/Blog/routes/posts.js";
 import notesRoute from "./app/Blog/routes/notes.js";
 import mediasRoute from "./app/Blog/routes/media.js";
-// import sendMail from "./nodemailer.js";
+import sendEmail from "./utils/sendEmail.js";
 
 // import { upload, uploadMultiple } from "./middleware/multer.js";
 import uploadRoute from "./middleware/multer.js";
 
 // create express app
-const app = express(); 
+const app = express();
 dotenv.config();
 
 const __filename = fileURLToPath(import.meta.url);
@@ -34,6 +32,7 @@ app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 // db
 try {
+  mongoose.set("strictQuery", true);
   await mongoose.connect(process.env.MONGO);
   console.log("Connected to mongoDB.");
 } catch (error) {
@@ -83,48 +82,13 @@ const port = process.env.PORT || 5000;
 
 app.listen(port, () => console.log(`Server is running on port ${port}`));
 
-const oAuth2Client = new google.auth.OAuth2(
-  process.env.CLIENT_ID,
-  process.env.CLEINT_SECRET,
-  process.env.REDIRECT_URI,
-  process.env.REFRESH_TOKEN,
-);
-oAuth2Client.setCredentials({ refresh_token: process.env.REFRESH_TOKEN });
+// const createbaseUrl = async (req, res) => {
+//   const baseUrl = req.protocol + "://" + req.get("host");
+//   console.log(baseUrl);
+// };
 
-async function sendMail() {
-  try {
-    const accessToken = await oAuth2Client.getAccessToken();
-
-    const transport = nodemailer.createTransport({
-      service: 'gmail',
-      auth: {
-        type: 'OAuth2',
-        user: 'gilogilala@gmail.com', 
-        clientId: process.env.CLIENT_ID,
-        clientSecret: process.env.CLEINT_SECRET,
-        refreshToken: process.env.REFRESH_TOKEN,
-        accessToken: accessToken,
-      },
-    });
-
-    const mailOptions = {
-      from: 'SENDER NAME <gilogilala@gmail.com>',
-      to: 'gilogilala@hotmail.com',
-      subject: 'Hello from gmail using API',
-      text: 'Hello from gmail email using API',
-      html: '<h1>Hello from gmail email using API</h1>',
-    };
-
-    const result = await transport.sendMail(mailOptions);
-    return result;
-  } catch (error) {
-    return error;
-  }
-}
-
-sendMail()
-  .then((result) => console.log('Email sent...', result))
-  .catch((error) => console.log(error.message));
-
-  const baseUrl = `${protocol}//${hostname}`
-console.log(baseUrl)
+// sendEmail(
+//       "jacavix669@letpays.com",
+//       "Verify Email",
+//       `click on the link to change password of your account . this link is valid only for 1 hour.`
+//     );
