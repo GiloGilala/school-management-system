@@ -5,7 +5,7 @@
 
 .env
 
-middleware/cloudinary-sample-master
+backend/middleware/cloudinary-sample-master
 middleware/complete-ecommerce-react-node-main
 middleware/image-gallery-main
 middleware/mernstackproject-master
