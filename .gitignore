@@ -1,11 +1,16 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
 # dependencies
-client/node_modules
-server/node_modules
-/.pnp
-.pnp.js
+/node_modules
 
+.env
+
+middleware/cloudinary-sample-master
+middleware/complete-ecommerce-react-node-main
+middleware/image-gallery-main
+middleware/mernstackproject-master
+middleware/node-restful-api-tutorial-09-image-upload
+middleware/Nodejs_Mongodb_Express_Multer-main
 # testing
 /coverage
 
