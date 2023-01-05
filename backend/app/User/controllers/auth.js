@@ -24,11 +24,11 @@ export const register = async (req, res, next) => {
     if (user) return next(createError(400, "User already registered!"));
 
     // const url = `http://localhost:5000/api/auth/${user.id}/${token}`;
-    await sendEmail(
-      email,
-      "Verify Email Regster",
-      `click on the link to change password of your account . this link is valid only for 1 hour.`
-    );
+    // await sendEmail(
+    //   email,
+    //   "Verify Email Regster",
+    //   `click on the link to change password of your account . this link is valid only for 1 hour.`
+    // );
 
     const newUser = new User({
       // fullname: req.body.fullname,
@@ -57,11 +57,11 @@ export const register = async (req, res, next) => {
 
 export const register1 = async (req, res, next) => {
   try {
-   const salt = bcrypt.genSaltSync(10);
+    const salt = bcrypt.genSaltSync(10);
     const hashPwd = bcrypt.hashSync(req.body.password, salt);
     //validations
 
-    const { username, email, password  } = req.body;
+    const { username, email, password } = req.body;
 
     if (!username) return next(createError(400, "UserName must be provided!"));
 
@@ -72,16 +72,16 @@ export const register1 = async (req, res, next) => {
     if (user) return next(createError(400, "User already registered!"));
 
     const token = jwt.sign(
-      { username, email, password:hashPwd, },
+      { username, email, password: hashPwd },
       process.env.JWT_ACCOUNT_ACTIVATE,
       {
         expiresIn: "7d",
       }
     );
-     // console.log(token)
-     const url = `http://localhost:5000/api/auth/activate/${token}`;
-     // console.log(token)
-     // console.log(url)
+    // console.log(token)
+    const url = `http://localhost:5000/api/auth/activate/${token}`;
+    // console.log(token)
+    // console.log(url)
 
     await sendEmail(
       email,
@@ -99,38 +99,36 @@ export const register1 = async (req, res, next) => {
   }
 };
 
- // const url = `http://localhost:5000/api/auth/${user._id}/${token}`;
-
 export const activateAccount = async (req, res, next) => {
   try {
-    const { token } = req.body;
+    const { token, verified } = req.body;
 
-    
     // let password = hashPwd;
-   
-       let decodedToken = jwt.verify(token, process.env.JWT_ACCOUNT_ACTIVATE) 
 
-        if (!decodedToken) return next(createError(400, "Incorrect or Expired link!"));
+    let decodedToken = jwt.verify(token, process.env.JWT_ACCOUNT_ACTIVATE);
 
-       const { username, email,  password } = decodedToken;
+    if (!decodedToken)
+      return next(createError(400, "Incorrect or Expired link!"));
 
-      const user = await User.findOne({ email }).exec();
+    const { username, email, password } = decodedToken;
+
+    const user = await User.findOne({ email }).exec();
     if (user) return next(createError(400, "User already registered!"));
 
     //  const salt = bcrypt.genSaltSync(10);
     // const hashPwd = bcrypt.hashSync(decodedToken.password, salt);
-     
-        const newUser = new User({
+
+    const newUser = new User({
       username,
       email,
       password,
+      verified: true,
       // password:hashPwd,
     });
     await newUser.save();
-    console.log(decodedToken)
+    console.log(decodedToken);
     // res.status(200).send("User has been created.");
     res.status(200).send(newUser);
-    
   } catch (err) {
     next(err);
   }
@@ -138,34 +136,123 @@ export const activateAccount = async (req, res, next) => {
 
 export const forgetPassword = async (req, res, next) => {
   try {
-    
-    const { email  } = req.body;
-  
+    const { email } = req.body;
+
     const user = await User.findOne({ email }).exec();
     if (!user) return next(createError(400, "User dose not exists "));
 
-    const token = jwt.sign(
-      {  id: user._id },
-      process.env.RESET_PASSWORD_KEY,
-      {
-        expiresIn: "20m",
-      }
-    );
-    
-     const url = `http://localhost:5000/api/auth/resetpassword/${token}`;
-  
+    const token = jwt.sign({ id: user._id }, process.env.RESET_PASSWORD_KEY, {
+      expiresIn: "7d",
+    });
+
+    const url = `http://localhost:5000/api/auth/resetPassword?resetLink=${token}`;
+
     await sendEmail(
       email,
-      "Verify Email",
+      "reset Password ",
       `click on the link to change password of your account 
       ${url}
        this link is valid only for 1 hour.`
     );
-return user.updateOne({resetLink: token})
+    await User.updateOne({ resetLink: token });
     // res.status(200).send("User has been created.");
     res.status(200).send({
       status: "success",
-      message: " Verify Email Sent... Please Check Your Email",
+      message: " Password reset Email Sent... Please Check Your Email",
+      resetoken,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+export const resetPassword1 = async (req, res, next) => {
+  try {
+    // const  resetLink  = req.params.resetLink;
+    const resetLink = req.query.resetLink;
+    const password = req.body.password;
+
+    const salt = bcrypt.genSaltSync(10);
+    const hashPwd = bcrypt.hashSync(password, salt);
+    const decodeLink = jwt.verify(resetLink, process.env.RESET_PASSWORD_KEY);
+
+    console.log(decodeLink.id);
+    if (!decodeLink)
+      return next(createError(401, "Incorrect or Expired link!!"));
+
+    const userLink = await User.findOne({ _id: decodeLink.id });
+    console.log(userLink);
+    if (userLink) {
+      // const password = req.body.password;
+
+      const newPassword = hashPwd;
+      // const newPassword = req.body.password;
+
+      await User.findByIdAndUpdate(
+        userLink,
+        {
+          $set: {
+            password: newPassword,
+            // , resetLink: ""
+          },
+        },
+        { new: true }
+      );
+    } else {
+      res.status(200).send({
+        success: false,
+        message: "This link has been expired ",
+        // upDatedUser,
+      });
+    }
+    // res.status(200).send("User has been created.");
+    res.status(200).send({
+      status: "success",
+      message: " User Password has been reset.",
+      // upDatedUser,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+export const resetPassword = async (req, res, next) => {
+  try {
+    // const  resetLink  = req.params.resetLink;
+    const resetLink = req.query.resetLink;
+    const password = req.body.password;
+
+    const salt = bcrypt.genSaltSync(10);
+    const hashPwd = bcrypt.hashSync(password, salt);
+    const newPassword = hashPwd;
+
+    const userLink = await User.findOne({ resetLink });
+
+    if (userLink) {
+      const decodeLink = jwt.verify(resetLink, process.env.RESET_PASSWORD_KEY);
+
+      await User.findByIdAndUpdate(
+        decodeLink.id,
+        {
+          $set: {
+            password: newPassword,
+            // resetLink: "",
+          },
+        },
+        { new: true }
+      );
+    } else {
+      res.status(200).send({
+        success: false,
+        message: "This link has expired or Incorrect link. ",
+        // upDatedUser,
+      });
+    }
+
+    // res.status(200).send("User has been created.");
+    res.status(200).send({
+      status: "success",
+      message: " User Password has been reset.",
+      // upDatedUser,
     });
   } catch (err) {
     next(err);
@@ -244,14 +331,12 @@ export const signin = async (req, res, next) => {
         })
         .status(200)
         .json({ message: "Signin Success" });
-        // .json({  user: { _id, email, username, roles } });
+      // .json({  user: { _id, email, username, roles } });
     });
   } catch (err) {
     next(err);
   }
 };
-
-
 
 export const upDatePassword = async (req, res, next) => {
   try {

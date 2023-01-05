@@ -32,10 +32,9 @@ export const deleteUser = async (req, res, next) => {
     const user = await User.findById(req.params.id);
     if (!user) return next(createError(404, "user not found!"));
     // if (req.user.id === user) {
-      await User.findByIdAndDelete(req.params.id);
-      res.status(200).json("The user has been deleted.");
-    // } 
-    
+    await User.findByIdAndDelete(req.params.id);
+    res.status(200).json("The user has been deleted.");
+    // }
   } catch (err) {
     next(err);
   }
@@ -60,7 +59,8 @@ export const getUser = async (req, res, next) => {
 // Get all users   =>   /api/admin/users
 export const getUsers = async (req, res, next) => {
   try {
-    const users = await User.find().sort({ _id: -1 }).limit(10);
+    // const users = await User.find();
+    const users = await User.find().sort({ _id: -1 }).limit(15);
 
     res.status(200).json(users);
   } catch (err) {

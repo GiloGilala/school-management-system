@@ -30,8 +30,11 @@ router.get("/me/pic", isAuthUser, getProfilePic);
 //DELETE
 router.delete("/:id", deleteUser);
 
+//DELETE
+router.put("/:id", updateUser);
+
 //GET
-router.get("/find/:id", isAuthUser, getUser);
+router.get("/find/:id", getUser);
 
 //GET ALL
 router.get("/", getUsers);

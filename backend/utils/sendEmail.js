@@ -31,12 +31,12 @@ const sendEmail = async (email, subject, text) => {
       from: "GILO <gilogilala@gmail.com>",
       to: email,
       subject: subject,
-      text:text,
+      text: text,
       // html: "<h1>Hello from gmail email using API</h1>",
     };
 
     const result = await transport.sendMail(mailOptions);
-    console.log("email sent successfully");
+    console.log("email sent successfully 1");
     return result;
   } catch (error) {
     console.log("email not sent!");

@@ -30,8 +30,8 @@ const userSchema = new mongoose.Schema(
       required: true,
     },
     resetLink: {
-      Data: String,
-      required: "",
+      type: String,
+      default: "",
     },
     profilePic: {
       type: String,
