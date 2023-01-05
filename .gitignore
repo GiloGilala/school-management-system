@@ -5,12 +5,12 @@
 
 .env
 
-backend/middleware/cloudinary-sample-master
+/backend/middleware/cloudinary-sample-master
 backend/middleware/complete-ecommerce-react-node-main
-backend/middleware/image-gallery-main
-backend/middleware/mernstackproject-master
-backend/middleware/node-restful-api-tutorial-09-image-upload
-backend/middleware/Nodejs_Mongodb_Express_Multer-main
+/backend/middleware/image-gallery-main
+/backend/middleware/mernstackproject-master
+/backend/middleware/node-restful-api-tutorial-09-image-upload
+/backend/middleware/Nodejs_Mongodb_Express_Multer-main
 # testing
 /coverage
 
